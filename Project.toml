@@ -1,0 +1,14 @@
+name = "PolynomialCovers"
+uuid = "12345678-1234-5678-1234-567812345678"
+version = "0.1.0"
+authors = ["Luis Javier Hernández Paricio <luhernan@usuarios-MacBook-Pro.local>"]
+
+[deps]
+BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+Polynomials = "f27b6e38-b328-58d1-80ce-0feddd5e7a45"
+
+[compat]
+BenchmarkTools = "1.6.3"
+LinearAlgebra = "1.12.0"
+Polynomials = "4.1.0"
