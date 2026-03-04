@@ -4,6 +4,12 @@ using HomotopyContinuation
 using LinearAlgebra
 using Printf
 
+BLAS.set_num_threads(1)
+
+
+
+
+
 ###
 using PolynomialCovers
 
@@ -36,7 +42,7 @@ end
 ############################################################
 
 function critical_radius(P)
-    R= PolynomialCovers.min_critical_radius(Polynomials.coefficients(P))
+    R= PolynomialCovers.min_critical_radius(PolynomialCovers.coefficients(P))
     S=PolynomialCovers.bound_values_radius_origin(P, R)
     return S
 end
@@ -116,7 +122,7 @@ function bench_cyclic(n,y)
     P = poly_cover(n)
 
     cyclic_lift_solver(P,y)
-    t = @belapsed BranchedCovers.FiberConstruction.cyclic_lift_solver($P,$y)
+    t = @belapsed PolynomialCovers.cyclic_lift_solver($P,$y)
 
     r = cyclic_lift_solver(P,y)
     err = residual(P,r,y)
@@ -156,123 +162,3 @@ ns = 5:5:50
 y,S = admissible_y(ns)
 run_benchmarks(ns)
 
-
-#=
-# ------------------------------------------------------------
-# 1. Familia de polinomios sparse (grado n)
-# ------------------------------------------------------------
-
-function sparse_polynomial(n)
-    Polynomial([1, 1, zeros(n-2)..., 1])
-end
-
-function sparse_polynomial_cover(n)
-    PolynomialCover([1, 1, zeros(n-2)..., 1])
-end
-
-# ------------------------------------------------------------
-# 2. Radio crítico y elección de basepoint
-# ------------------------------------------------------------
-
-function choose_basepoint(P; factor=2.0)
-    S, _ = min_max_critical_radius(coefficients(P))
-    y = factor * S
-    return y, S
-end
-
-# ------------------------------------------------------------
-# 3. Companion solver (roots estándar Julia)
-# ------------------------------------------------------------
-
-function bench_companion(n, y)
-    P = sparse_polynomial(n)
-    roots(P)  # warm-up
-    @belapsed roots($P)
-end
-
-# ------------------------------------------------------------
-# 4. Homotopy continuation
-# ------------------------------------------------------------
-
-function bench_homotopy(n, y)
-
-    @polyvar x
-    f = x^n + x + 1 - y   # construir directamente el polinomio
-
-    solve([f]; show_progress=false)  # warm-up
-    t = @belapsed solve([$f]; show_progress=false)
-
-    sol = solve([f]; show_progress=false)
-    r = first.(solutions(sol))   # extraer raíces escalares
-
-    err = maximum(abs.(r.^n .+ r .+ 1 .- y))
-
-    return t, err
-end
-
-#=
-
-function bench_homotopy(n, y)
-    @polyvar x
-    P = sparse_polynomial(n)
-
-    f = P(x) - y
-    solve(f)  # warm-up
-
-    @belapsed solve($f)
-end
-=#
-# ------------------------------------------------------------
-# 5. Cyclic lift solver (tu método)
-# ------------------------------------------------------------
-
-function bench_cyclic(n, y)
-    P = sparse_polynomial_cover(n)
-
-    cyclic_lift_solver(P, y)  # warm-up
-
-    @belapsed cyclic_lift_solver($P, $y)
-end
-
-# ------------------------------------------------------------
-# 6. Error relativo entre métodos
-# ------------------------------------------------------------
-
-function relative_error(r1, r2)
-    norm(sort(r1) - sort(r2)) / norm(r1)
-end
-
-# ------------------------------------------------------------
-# 7. Loop principal benchmark
-# ------------------------------------------------------------
-
-function run_benchmarks(ns)
-
-    println()
-    println(" n | companion | homotopy | cyclic |   S   | |y|/S")
-    println("---------------------------------------------------")
-
-    for n in ns
-
-        Pc = sparse_polynomial_cover(n)
-        y, S = choose_basepoint(Pc)
-
-        ratio = abs(y)/S
-
-        t_comp = bench_companion(n, y)
-        t_hom  = bench_homotopy(n, y)
-        t_cyc  = bench_cyclic(n, y)
-
-        @printf("%2d | %8.3e | %8.3e | %8.3e | %.3e | %.2f\n",
-                n, t_comp, t_hom, t_cyc, S, ratio)
-    end
-end
-
-# ------------------------------------------------------------
-# 8. Ejecutar benchmark
-# ------------------------------------------------------------
-
-ns = 5:5:50
-run_benchmarks(ns)
-
-=#

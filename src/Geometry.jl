@@ -340,3 +340,187 @@ function safe_path_arc(
 
     return Path(verts)
 end
+###
+
+function promote_vertices(
+    z0::Vertex{T1},
+    zf::Vertex{T2},
+    S::Vector{Vertex{T3}},
+) where {T1,T2,T3}
+
+    T = promote_type(T1,T2,T3)
+
+    convertV(v) = Vertex{T}(Complex{T}(v.z))
+
+    return convertV(z0),
+           convertV(zf),
+           convertV.(S)
+end
+
+
+###
+function avoid_points_path(
+    z0::Vertex{T1},
+    zf::Vertex{T2},
+    S::Vector{Vertex{T3}};
+    d_safe = 1.0,
+    step   = 0.05,
+    λ      = 0.3,
+    step_min = 0.15,
+    step_max = 0.3,
+) where {T1,T2,T3}
+
+    z0T, zfT, ST = promote_vertices(z0, zf, S)
+
+    T = eltype(real(z0T.z))  # ← tipo final REAL
+
+    return _avoid_points_path(
+        z0T, zfT, ST;
+        d_safe = T(d_safe),
+        step   = T(step),
+        λ      = T(λ),
+        step_min = T(step_min),
+        step_max = T(step_max),
+    )
+end
+
+function _avoid_points_path(
+    z0::Vertex{T},
+    zf::Vertex{T},
+    S::Vector{Vertex{T}};
+    step::T = T(0.05),
+    λ::T = T(0.3),
+    d_safe::T = T(1.0),
+    step_min::T = T(0.15),
+    step_max::T = T(1.0),
+    α::T = T(0.3),
+    tol::T = T(1e-6),
+    maxiter::Int = 10_000,
+) where {T<:AbstractFloat}
+
+    z = z0.z
+    target = zf.z
+
+    final_is_forbidden = any(v -> v == zf, S)
+
+    verts = Vertex{T}[z0]
+
+    Vsmooth = zero(z)
+
+    orient = sign(imag(target - z0.z) + eps(T))
+
+    for _ in 1:maxiter
+
+        # ---------------------------
+        # Attraction
+        # ---------------------------
+        V = target - z
+
+        # ---------------------------
+        # Repulsion + tangential bypass
+        # ---------------------------
+        mindist = typemax(T)
+
+        for a in S
+
+            if final_is_forbidden && a == zf
+                continue
+            end
+
+            d = z - a.z
+            r = abs(d)
+
+            mindist = min(mindist, r)
+
+            r < eps(T) &&
+                error("Collision with forbidden point")
+
+            if r < d_safe
+                radial = d / r
+
+                w = λ * (1/r - 1/d_safe) / r
+                V += w * radial
+
+                tangential = orient * im * radial
+                V += T(0.5) * w * tangential
+            end
+        end
+
+        abs(V) < sqrt(eps(T)) && break
+
+        # ---------------------------
+        # Curvature smoothing
+        # ---------------------------
+        if Vsmooth == 0
+            Vsmooth = V
+        else
+            Vsmooth = (one(T)-α)*Vsmooth + α*V
+        end
+
+        # ---------------------------
+        # Adaptive step
+        # ---------------------------
+        scale = clamp(
+            mindist / d_safe,
+            step_min,
+            step_max
+        )
+
+        step_eff = step * scale
+
+        dir = Vsmooth / abs(Vsmooth)
+
+        # forbid backward motion
+        forward = target - z
+        if real(conj(dir) * forward) ≤ 0
+            dir = forward / abs(forward)
+        end
+
+        z_new = z + step_eff * dir
+
+        # ---------------------------
+        # Reject cusp creation
+        # ---------------------------
+        if length(verts) ≥ 2
+            z_prev  = verts[end].z
+            z_prev2 = verts[end-1].z
+
+            v1 = z_prev - z_prev2
+            v2 = z_new - z_prev
+
+            if real(conj(v1)*v2) ≤ 0
+                continue
+            end
+        end
+
+        z = z_new
+        push!(verts, Vertex{T}(z))
+
+        abs(z - target) < tol && break
+    end
+
+    # ---------------------------
+    # SAFE ENDPOINT INSERTION ⭐
+    # ---------------------------
+    if length(verts) ≥ 2
+        z_prev  = verts[end].z
+        z_prev2 = verts[end-1].z
+
+        v1 = z_prev - z_prev2
+        v2 = zf.z - z_prev
+
+        if real(conj(v1)*v2) > 0
+            push!(verts, zf)
+        else
+            verts[end] = zf
+        end
+    else
+        push!(verts, zf)
+    end
+
+    return Path(verts)
+end
+
+###
+
+

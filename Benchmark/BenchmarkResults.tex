@@ -1,0 +1,51 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{geometry}
+\geometry{margin=1in}
+\begin{document}
+
+% Benchmark results for PolynomialCovers (Julia, parallel execution)
+
+\paragraph{Benchmark Description}
+This document summarizes the results of parallel benchmarks for the Julia package \texttt{PolynomialCovers}. The script evaluates two solvers: the companion solver and the cyclic solver, for polynomials of increasing degree. The benchmarks are executed using 4 Julia threads to exploit parallelism, and the results are shown for degrees from 5 to 50 in steps of 5.
+
+\paragraph{Setup}
+The script initializes Julia with 4 threads and disables BLAS multithreading to avoid interference. For each degree $n$, the following is computed:
+\begin{itemize}
+  \item \textbf{companion}: Time to compute roots using the companion matrix method.
+  \item \textbf{cyclic}: Time to compute roots using the cyclic lift solver from \texttt{PolynomialCovers}.
+  \item \textbf{err\_comp}: Maximum residual error for the companion solver.
+  \item \textbf{err\_cyc}: Maximum residual error for the cyclic solver.
+\end{itemize}
+
+\paragraph{Results}
+The table below shows the benchmark results:
+
+\begin{center}
+\begin{tabular}{rcccc}
+\hline
+$n$ & companion & cyclic & err\_comp & err\_cyc \\
+\hline
+5  & $3.92\times10^{-6}$ & $9.13\times10^{-6}$ & $5.73\times10^{-14}$ & $1.83\times10^{-15}$ \\
+10 & $1.07\times10^{-5}$ & $2.16\times10^{-5}$ & $2.42\times10^{-13}$ & $1.07\times10^{-14}$ \\
+15 & $2.36\times10^{-5}$ & $3.90\times10^{-5}$ & $2.65\times10^{-13}$ & $9.06\times10^{-15}$ \\
+20 & $4.00\times10^{-5}$ & $6.62\times10^{-5}$ & $2.89\times10^{-13}$ & $2.13\times10^{-14}$ \\
+25 & $5.91\times10^{-5}$ & $9.74\times10^{-5}$ & $7.27\times10^{-13}$ & $2.49\times10^{-14}$ \\
+30 & $8.60\times10^{-5}$ & $1.35\times10^{-4}$ & $7.24\times10^{-13}$ & $2.70\times10^{-14}$ \\
+35 & $1.11\times10^{-4}$ & $1.75\times10^{-4}$ & $6.47\times10^{-13}$ & $3.02\times10^{-14}$ \\
+40 & $1.52\times10^{-4}$ & $2.25\times10^{-4}$ & $1.30\times10^{-12}$ & $3.67\times10^{-14}$ \\
+45 & $1.97\times10^{-4}$ & $2.73\times10^{-4}$ & $1.59\times10^{-12}$ & $4.46\times10^{-14}$ \\
+50 & $2.38\times10^{-4}$ & $3.16\times10^{-4}$ & $1.35\times10^{-12}$ & $3.28\times10^{-14}$ \\
+\hline
+\end{tabular}
+\end{center}
+
+\paragraph{Comments}
+\begin{itemize}
+  \item The parallel execution significantly reduces the total runtime for the benchmarks, especially for higher degrees.
+  \item Both solvers show very low residual errors, indicating high numerical accuracy.
+  \item The cyclic solver is generally slower than the companion solver, but provides comparable accuracy.
+  \item The script is thread-safe and avoids packages that are not compatible with Julia's multithreading.
+\end{itemize}
+
+\end{document}

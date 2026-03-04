@@ -59,8 +59,51 @@ function fiber(
 	return Fiber(P, xs, w0, eS)
 end
 
+using Base.Threads
 
-function transport!(F::Fiber, path::Path; kwargs...)
+function transport_threads!(F::Fiber, path::Path; kwargs...)
+
+    states = [PointState(x, F.w) for x in F.xs]
+
+    Threads.@threads for i in eachindex(states)
+        lift_path_fast!(F.P, states[i], path; S=F.S, kwargs...)
+    end
+
+    @inbounds for i in eachindex(states)
+        F.xs[i] = states[i].x
+    end
+
+    F.w = path.vertices[end].z
+
+    return F
+end
+
+#=
+
+function transport_threads!(F::Fiber, path::Path; kwargs...)
+
+    xs = F.xs
+    w0 = F.w
+    P  = F.P
+    S  = F.S
+
+    n = length(xs)
+
+	@inbounds @threads for i in eachindex(xs)
+        # estado local (stack allocation, muy barato)
+        st = PointState(xs[i], w0)
+
+        lift_path_fast!(P, st, path; S=S, kwargs...)
+
+        xs[i] = st.x
+    endex
+
+    F.w = path.vertices[end].z
+    return F
+end
+
+=#
+function transport_serial!(F::Fiber, path::Path; kwargs...)
     # Build states at current base value
     states = [PointState(x, F.w) for x in F.xs]
 
@@ -74,6 +117,14 @@ function transport!(F::Fiber, path::Path; kwargs...)
     F.w = path.vertices[end].z
 
     return F
+end
+
+function transport!(F::Fiber, path::Path; parallel=true, kwargs...)
+    if parallel && Threads.nthreads() > 1
+        transport_threads!(F, path; kwargs...)
+    else
+        transport_serial!(F, path; kwargs...)
+    end
 end
 
 
@@ -145,9 +196,19 @@ Use the general fiber solver instead.
     return F.xs   # raíces en orden cíclico
 end
 
+const PLOT_DIR = joinpath(@__DIR__, "MyPlots", "PlotExamples")
 
 
-export PolynomialCover, coefficients, value, degree,
-	Fiber, fiber, transport!, transport_to!, cyclic_lift_solver
+
+export PolynomialCover, coefficients, value, degree, Path,
+ PointState, Disk, basepoint, basepoint_initial_loop,
+	Fiber, fiber, transport!, transport_to!, cyclic_lift_solver,
+	Vertex, safe_path_arc, critical_radius, 
+    y_sequence, aux_lift_predictor!, segment_intersects_disk,
+    min_critical_radius, bound_values_radius_origin, 
+    critical_values_radius_origin,  critical_values_disk_origin,    
+     critical_values_exclusion_radius, _min_radius, avoid_points_path,
+     startpoint,endpoint,PLOT_DIR, plot_path
+     
 
 end # module
