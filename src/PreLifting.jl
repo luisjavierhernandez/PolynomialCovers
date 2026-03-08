@@ -4,8 +4,8 @@ mutable struct PointState{T<:Real}
     w::Complex{T}          # imagen actual
 end
 
-include("PolynomialCriticalDisks.jl")
-include("ApproximateLiftPath.jl")
+#include("PolynomialCriticalDisks.jl")
+#include("ApproximateLiftPath.jl")
 
 
 # -------------------pr-----------------------------------------

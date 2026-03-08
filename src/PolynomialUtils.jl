@@ -1,7 +1,34 @@
 
+#Me recomiendan
 
+# ------------------------------------------------------------
+# Tipo concreto
+# ------------------------------------------------------------
 
+struct PolynomialCover{T<:Real}
+    coeffs::Vector{Complex{T}}
+end
 
+# ------------------------------------------------------------
+# Interfaz básica
+# ------------------------------------------------------------
+
+coefficients(P::PolynomialCover) = P.coeffs
+
+degree(P::PolynomialCover) = length(P.coeffs) - 1
+
+# ------------------------------------------------------------
+# Constructores
+# ------------------------------------------------------------
+
+function PolynomialCover(coeffs::AbstractVector{<:Number})
+    T = float(real(eltype(coeffs)))
+    PolynomialCover{T}(Complex{T}.(coeffs))
+end
+
+PolynomialCover(coeffs::Number...) = PolynomialCover(collect(coeffs))
+
+#=
 # ------------------------------------------------------------
 # Tipo concreto
 # ------------------------------------------------------------
@@ -32,7 +59,7 @@ function PolynomialCover(coeffs::AbstractVector{<:Number})
     return PolynomialCover{T}(Complex{T}.(coeffs))
 end
 
-
+=#
 
 
 function value(P::PolynomialCover, z::Number)
@@ -44,6 +71,10 @@ function value(P::PolynomialCover, z::Number)
         acc = acc*zT + T(a)
     end
     return acc
+end
+
+function (P::PolynomialCover)(z)
+    value(P, z)
 end
 
 
@@ -110,28 +141,3 @@ function fiber_via_companion(
 
     return Complex{T}.(eigvals(C))
 end
-#=
-function roots(P::PolynomialCover{T}) where T
-    n = degree(P)
-    n == 0 && return Complex{float(T)}[]
-
-    Tf = float(T)
-    a = Complex{Tf}.(P.coeffs)
-
-    C = zeros(Complex{Tf}, n, n)
-
-    # subdiagonal
-    for i in 2:n
-        C[i, i-1] = one(Complex{Tf})
-    end
-
-    # primera fila (coeficientes correctos)
-    for j in 1:n
-        C[1, j] = -a[j+1] / a[1]
-    end
-
-    return Complex{T}.(eigvals(C))  
-end
-=#
-#export PolynomialCover, value, roots,   critical_values, 
- #       critical_points, derivative, degree, coefficients

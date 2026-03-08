@@ -1,3 +1,9 @@
+using Test
+using LinearAlgebra
+using Plots
+using DelimitedFiles
+using PolynomialCovers
+
 include("../MyPlots/MyPlot.jl")
 
 @testset "visual debug" begin

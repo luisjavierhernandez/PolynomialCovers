@@ -523,4 +523,63 @@ end
 
 ###
 
+"""
+    approach_path(
+    u::Complex{T},
+    v::Complex{T},
+    rho::Real;
+    npoints::Int = 6
+) where {T<:Real}
+
+TBW
+"""
+function approach_path(
+    u::Complex{T},
+    v::Complex{T},
+    rho::Real;
+    npoints::Int = 6
+) where {T<:Real}
+
+    @assert abs(u) < rho "Initial point must satisfy |u| < rho"
+
+    # Caso v = 0 → segmento radial
+    if iszero(v)
+
+        dir = u / abs(u)
+        w = rho * dir
+
+        pts = Complex{T}[u, w]
+        return Path(pts)
+
+    end
+
+    # Caso general → arco seguro hasta la circunferencia
+    w = rho * (v / abs(v))
+
+    return safe_path_arc(u, w, rho; npoints=npoints)
+
+end
+
+
+function min_pairwise_distance(S::Vector{Vertex{T}}) where {T<:Real}
+
+    n = length(S)
+    n < 2 && return zero(T)
+
+    dmin2 = typemax(T)
+
+    @inbounds for i in 1:n-1
+        zi = S[i].z
+        for j in i+1:n
+            d2 = abs2(zi - S[j].z)
+            dmin2 = min(dmin2, d2)
+        end
+    end
+
+    return sqrt(dmin2)
+end
+
+
+
+
 

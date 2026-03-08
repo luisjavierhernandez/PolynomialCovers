@@ -1,8 +1,8 @@
 
 
 using LinearAlgebra
-include("Geometry.jl")
-include("PolynomialUtils.jl")
+#include("Geometry.jl")
+#include("PolynomialUtils.jl")
 
 
 
@@ -142,26 +142,6 @@ function min_critical_radius(coeffs::AbstractVector{<:Number})
     return minimum(vals)
 end
 
-# ============================================================
-# Geometry of critical points
-# ============================================================
-#=
-    critical_baricenter(P)
-
-Baricenter of the critical points of a polynomial.
-"""
-function critical_baricenter(P::PolynomialCover)
-    n = degree(P)
-    if n ≤ 1
-        return zero(eltype(P.coeffs))
-    end
-
-    a0 = P.coeffs[1]
-    a1 = P.coeffs[2]
-
-    return -a1 / (n * a0)
-end
-=#
 
 """
     critical_radius_origin(P)
