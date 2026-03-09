@@ -140,7 +140,7 @@ Object/Description
 PolynomialCover/Polynomial covering map
 Fiber/Fiber of the map over a point
 Path/Path in the codomain
-Disk/D isk used for geometric constructions
+Disk/Disk used for geometric constructions
 
 Core operations include
 	•	fiber(P, b) – compute the fiber over b

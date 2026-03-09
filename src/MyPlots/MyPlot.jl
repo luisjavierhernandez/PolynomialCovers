@@ -56,3 +56,5 @@ function plot_path(
 
     return plt
 end
+
+const PLOT_DIR = joinpath(@__DIR__, "MyPlots", "PlotExamples")
