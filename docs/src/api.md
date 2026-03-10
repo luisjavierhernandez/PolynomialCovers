@@ -1,5 +1,12 @@
 # API Reference
 
+# API Reference
+
+```@autodocs
+Modules = [PolynomialCovers]
+Order = [:type, :function]
+```
+<!--
 ## Geometry
 
 ```@docs
@@ -18,6 +25,7 @@ derivative
 critical_points
 critical_values
 ```
+-->
 ## Lifting
 
 ```@docs

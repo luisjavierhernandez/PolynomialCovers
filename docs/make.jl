@@ -1,19 +1,24 @@
 using Documenter
 using PolynomialCovers
 
+using Documenter
+using PolynomialCovers
+
 makedocs(
     sitename = "PolynomialCovers.jl",
     modules = [PolynomialCovers],
-    format = Documenter.HTML(),
+
+    format = Documenter.HTML(
+        repolink = "https://github.com/luisjavierhernandez/PolynomialCovers.jl"
+    ),
+
     checkdocs = :none,
+    warnonly = true,
+
     pages = [
         "Home" => "index.md",
-        # "Theory" => "theory.md",
-        # "Geometry" => "geometry.md",
-        # "Polynomial Covers" => "polynomial_covers.md",
-        # "Critical Geometry" => "critical_geometry.md",
-        # "Lifting" => "lifting.md",
-        # "Cyclic Solver" => "cyclic_solver.md",
+        "Geometry" => "geometry.md",
+        "Polynomial Covers" => "polynomialUtils.md",
         "API" => "api.md",
     ],
 )

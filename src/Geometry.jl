@@ -1,9 +1,26 @@
+"""
+Geometry primitives used in PolynomialCovers.
+
+This document defines disks, vertices, and polygonal paths in the
+complex plane together with basic geometric utilities used in
+path lifting algorithms.
+"""
+
 import Base: in
 
 """
     Disk{T}
 
-Closed disk in ℂ with center ∈ Complex{T} and radius ∈ T.
+Closed disk in the complex plane.
+
+# Fields
+- `center::Complex{T}` — center of the disk
+- `radius::T` — non–negative radius
+
+# Notes
+The disk represents the closed set
+
+    { z ∈ ℂ : |z - center| ≤ radius }.
 """
 struct Disk{T<:Real}
     center :: Complex{T}
@@ -29,10 +46,19 @@ end
 # ------------------------------------------------------------
 # Membership
 # ------------------------------------------------------------
+"""
+    in(z, d::Disk)
 
+Return `true` if the complex number `z` lies in the closed disk `d`.
+"""
 in(z::Complex, d::Disk) =
     abs(z - d.center) ≤ d.radius
 
+"""
+    onboundary(d::Disk, z::Complex)
+
+Return `true` if the complex number `z` lies on the boundary of the disk `d`.
+"""
 onboundary(d::Disk, z::Complex) =
     abs(abs(z - d.center) - d.radius) ≤ eps(d.radius)
 
@@ -42,7 +68,13 @@ Base.contains(d::Disk, z::Complex) = in(z, d)
 # ------------------------------------------------------------
 # Distance
 # ------------------------------------------------------------
+"""
+    distance(d::Disk, z)
 
+Distance from the point `z` to the disk `d`.
+
+Returns `0` if `z` lies inside the disk.
+"""
 function distance(d::Disk, u::Complex)
     δ = abs(u - d.center) - d.radius
     max(zero(d.radius), δ)
@@ -51,9 +83,20 @@ end
 # ------------------------------------------------------------
 # Transformations
 # ------------------------------------------------------------
+"""
+    translate(d::Disk, w)
 
+Translate the disk `d` by the complex displacement `w`.
+"""
 translate(d::Disk{T}, w::Complex) where {T} =
     Disk{T}(d.center + Complex{T}(w), d.radius)
+
+"""
+    scale(d::Disk, λ)
+
+Scale the radius of the disk `d` by the factor `λ ≥ 0`.
+The center remains unchanged.
+"""
 
 function scale(d::Disk{T}, λ::Real) where {T}
     λ ≥ zero(λ) || throw(ArgumentError("Scale must be non-negative"))
@@ -81,7 +124,12 @@ end
 """
     Vertex{T}
 
-Vertex (point) in ℂ.
+Vertex (point) in the complex plane.
+
+# Field
+- `z::Complex{T}` — complex coordinate of the vertex
+
+Vertices are used to build polygonal paths (`Path`).
 """
 
 
@@ -110,7 +158,12 @@ import Base: ==
 """
     Path{T}
 
-Discrete polygonal path represented as a sequence of vertices (can be a singleton).
+Discrete polygonal path represented as a sequence of vertices.
+
+# Field
+- `vertices::Vector{Vertex{T}}`
+
+A path with `n` vertices represents `n-1` linear segments.
 """
 struct Path{T<:Real}
     vertices::Vector{Vertex{T}}
@@ -149,9 +202,19 @@ end
 
 Base.length(p::Path) = length(p.vertices)
 
+"""
+    startpoint(p)
 
+Return the first point of the path `p`.
+"""
 
 startpoint(p::Path) = p.vertices[1].z
+
+"""
+    endpoint(p)
+
+Return the final point of the path `p`.
+"""
 endpoint(p::Path)   = p.vertices[end].z
 
 
@@ -159,7 +222,14 @@ endpoint(p::Path)   = p.vertices[end].z
 # ============================================================
 # Concatenation
 # ============================================================
+"""
+    promote_vertices(z0, zf, S)
 
+Promote vertices to a common floating point type.
+
+This ensures that path construction algorithms operate with a
+consistent numeric type.
+"""
 function concatenate(p::Path{T}, q::Path{T}) where {T}
     endpoint(p) == startpoint(q) ||
         error("Paths are not compatible for concatenation")
@@ -342,6 +412,15 @@ function safe_path_arc(
 end
 ###
 
+"""
+    promote_vertices(z0, zf, S)
+
+Promote vertices to a common floating point type.
+
+This ensures that path construction algorithms operate with a
+consistent numeric type.
+"""
+
 function promote_vertices(
     z0::Vertex{T1},
     zf::Vertex{T2},
@@ -359,6 +438,17 @@ end
 
 
 ###
+
+"""
+    avoid_points_path(z0, zf, S; kwargs...)
+
+Construct a polygonal path from `z0` to `zf` that avoids a set
+of forbidden vertices `S`.
+
+The algorithm uses a potential field method combining attraction
+towards the target and repulsion from forbidden points.
+"""
+
 function avoid_points_path(
     z0::Vertex{T1},
     zf::Vertex{T2},
@@ -383,6 +473,10 @@ function avoid_points_path(
         step_max = T(step_max),
     )
 end
+
+"""
+Internal implementation of `avoid_points_path`.
+"""
 
 function _avoid_points_path(
     z0::Vertex{T},
@@ -559,6 +653,12 @@ function approach_path(
     return safe_path_arc(u, w, rho; npoints=npoints)
 
 end
+
+"""
+    min_pairwise_distance(S)
+
+Return the minimal distance between vertices in `S`.
+"""
 
 
 function min_pairwise_distance(S::Vector{Vertex{T}}) where {T<:Real}
