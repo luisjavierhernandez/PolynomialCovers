@@ -1,0 +1,8 @@
+# Documenter build
+docs/build/
+
+# Mac
+.DS_Store
+
+# Julia precompile cache
+*.ji

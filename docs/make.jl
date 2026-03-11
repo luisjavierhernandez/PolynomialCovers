@@ -1,5 +1,4 @@
-using Documenter
-using PolynomialCovers
+
 
 using Documenter
 using PolynomialCovers
@@ -19,6 +18,7 @@ makedocs(
         "Home" => "index.md",
         "Geometry" => "geometry.md",
         "Polynomial Covers" => "polynomialUtils.md",
+        "Critical Disks" => "polynomialCriticalDisks.md",
         "API" => "api.md",
     ],
 )

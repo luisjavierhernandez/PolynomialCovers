@@ -1,8 +1,6 @@
 
 
 using LinearAlgebra
-#include("Geometry.jl")
-#include("PolynomialUtils.jl")
 
 
 
@@ -11,17 +9,6 @@ using LinearAlgebra
 
 
 
-
-
-# ============================================================
-# No export
-    #=
-    critical_baricenter,
-    critical_radius_baricenter,
-    critical_points_disk,
-    candidate_disks
-    =#
-# ============================================================
 
 # ============================================================
 # Low-level coefficient bounds (your original ideas)
@@ -132,9 +119,9 @@ end
 
 
 """
-    min_max_critical_radius(coeffs)
+    min_critical_radius(coeffs)
 
-Return `(rmin, rmax)` among all bounds.
+Return `rmin` among all bounds.
 """
 function min_critical_radius(coeffs::AbstractVector{<:Number})
     b = bounds_radius(coeffs)
@@ -181,14 +168,28 @@ function bound_values_radius_origin(P::PolynomialCover, R::Real)
     return S
 end
 
+"""
+    critical_values_radius_origin(P)
+
+Return a radius of a disk centered at the origin that
+contains all critical values of `P`.
+"""
+
 function critical_values_radius_origin(P::PolynomialCover)
     R = critical_points_radius_origin(P)
     bound_values_radius_origin(P, R)
 end
 
+"""
+    critical_values_disk_origin(P)
+
+Return a disk centered at the origin containing all
+critical values of the polynomial cover.
+"""
+
 function critical_values_disk_origin(P::PolynomialCover)
     r = critical_values_radius_origin(P)
-    Disk(zero(r), r)
+    Disk(0.0+0.0im, r)
 end
 
 # ============================================================

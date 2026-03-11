@@ -119,6 +119,34 @@ function critical_points(P::PolynomialCover{T}) where T
 end
 
 
+
+using Polynomials: roots
+
+"""
+    critical_points(P::PolynomialCover{T}) where T
+
+Return the critical points of the polynomial map (roots of its derivative).
+Assumes coefficients are ordered as: [a₀, a₁, ..., aₙ] for P(z) = a₀zⁿ + a₁zⁿ⁻¹ + ... + aₙ
+"""
+function critical_points(P::PolynomialCover{T}) where T
+    n = degree(P)
+    n == 0 && return Complex{T}[]  # Polinomio constante: sin puntos críticos
+    
+    # Derivada: d/dz (a₀zⁿ + a₁zⁿ⁻¹ + ... + aₙ) = n*a₀zⁿ⁻¹ + (n-1)*a₁zⁿ⁻² + ... + 1*aₙ₋₁
+    deriv_coeffs = Complex{T}[]
+    
+    for i in 0:(n-1)
+        coefficient = P.coeffs[i+1] * (n - i)  # aᵢ * (n-i)
+        push!(deriv_coeffs, coefficient)
+    end
+    
+    # Crear el polinomio derivada
+    deriv_poly = PolynomialCover{T}(deriv_coeffs)
+    
+    return roots(deriv_poly)
+end
+
+
 """
     critical_values(P)
 
