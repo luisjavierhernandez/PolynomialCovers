@@ -100,24 +100,6 @@ function derivative(P::PolynomialCover, z::Number)
 end
 
 
-"""
-    critical_points(P)
-
-Return the critical points of the polynomial map.
-"""
-function critical_points(P::PolynomialCover{T}) where T
-
-    n = degree(P)
-    n == 0 && return Complex{T}[]
-
-    deriv_coeffs =
-        Complex{T}[(P.coeffs[i]*(n - i + 1)) for i in 1:n]
-
-    deriv_poly = PolynomialCover{T}(deriv_coeffs)
-
-    return roots(deriv_poly)
-end
-
 
 
 using Polynomials: roots

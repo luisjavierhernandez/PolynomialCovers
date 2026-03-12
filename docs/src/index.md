@@ -68,19 +68,73 @@ Pages = [
 The algorithms implemented in PolynomialCovers.jl are based on the
 idea that the solutions of
 
-$$
+```math
 P(x) = y
-$$
+```
 
 can be computed by lifting paths in the complex plane through the
 polynomial map
 
-$$
+```\math
 P : \mathbb{C} \to \mathbb{C}.
-$$
+```
 
 In particular, the package implements numerical algorithms inspired by
 monodromy methods and path continuation techniques.
+
+## Examples
+
+```julia
+
+using PolynomialCovers
+
+P = PolynomialCover([1.0, 0.0, -1.0, 0.0, 1.0])   # z^4 - z^2 + 1
+
+F = fiber(P)
+
+transport_to!(F, 5)
+
+println(F.xs)
+
+
+
+# P(z) = z² - 1
+P = PolynomialCover([1.0, 0.0, -1.0])
+
+y = 3.0
+
+roots = cyclic_lift_solver(P, y)
+
+println("Solutions of P(x) = $y")
+println(roots)
+
+
+
+```
+
+To compare
+
+```julia
+
+using PolynomialCovers
+using Polynomials
+
+P = PolynomialCover([1.0, 0.0, -1.0, 0.0])   # z³ - z
+
+y = 2.0
+
+roots_lift = cyclic_lift_solver(P, y)
+
+# Compare with classical polynomial root solver
+poly = Polynomial([ -y, 0, -1, 1 ])  # z³ - z - y
+roots_classical = roots(poly)
+
+println("Cyclic lift solver:")
+println(roots_lift)
+
+println("\nClassical roots:")
+println(roots_classical)
+```
 
 ## Reference
 

@@ -42,6 +42,7 @@ export PolynomialCover,
        Vertex,
        Path,
        Disk,
+       distance,
 
        Fiber,
        critical_values_radius_origin,

@@ -1,5 +1,20 @@
 
 # Estructura principal para la fibra
+"""
+    Fiber{T}
+
+Representation of a fiber of a polynomial cover.
+
+Fields
+-------
+- `P` : polynomial cover.
+- `xs` : vector of points in the domain satisfying `P(x) = w`.
+- `w` : value in the codomain over which the fiber is taken.
+- `S` : bound on the radius containing all critical values.
+
+The structure is mutable because fiber points are updated when
+transporting the fiber along paths in the codomain.
+"""
 mutable struct Fiber{T<:Real}
 	P::PolynomialCover{T}
 	xs::Vector{Complex{T}}
@@ -14,7 +29,10 @@ end
 
 Compute the fiber of a polynomial cover `P` at a generic basepoint using
 path lifting along a loop around the "point at infinity" (monodromy).
-
+The fiber is constructed by lifting a loop in the codomain
+that surrounds the disk containing all critical values.
+This loop generates the monodromy action that reveals all
+sheets of the covering.
 # Arguments
 - `P::PolynomialCover{T}`: The polynomial cover for which to compute the fiber.
 - `nl::Int=8`: Number of linear segments in the basepoint loop.
@@ -37,6 +55,10 @@ Duplicate points are avoided by a relative tolerance check.
 This method guarantees that the returned fiber contains exactly `degree(P)` 
 points. Errors are raised if the fiber cannot be fully constructed 
 or if any path lifting fails.
+
+Starting from one sheet of the fiber, the algorithm repeatedly
+lifts the monodromy loop and collects new sheets until the
+expected number `degree(P)` is reached.
 
 # Example
 ```julia
@@ -130,8 +152,9 @@ end
 """
     transport!(F::Fiber, path::Path; parallel=true, kwargs...) -> Fiber
 
-Transport a fiber along a given path in the codomain, updating the fiber points
-using path lifting of the polynomial cover.
+
+Transport the entire fiber along a path in the codomain by
+lifting the path independently on each sheet of the covering.
 
 # Arguments
 - `F::Fiber`: The fiber to be transported. Contains the polynomial `P`, the current
@@ -201,6 +224,8 @@ The function first checks that `y` is sufficiently far from the critical value
 disk: |y| must exceed `3S/2` (where `S` is the radius enclosing all critical values).
 It then constructs a safe path from the current fiber value `F.w` to `y` using
 `safe_path_arc` and calls `transport!` to lift each sheet along this path.
+The condition:|y| must exceed `3S/2`, ensures that the transport path can be chosen
+without intersecting the disk containing the critical values.
 
 # Errors
 Throws an `ArgumentError` if `|y| ≤ 3S/2`, since transport too close to the
@@ -219,7 +244,6 @@ transport_to!(F, y_target)
 
 println("Fiber at y = ", y_target, ": ", F)
 """
-
 
 function transport_to!(F::Fiber, y::Number; kwargs...)
 
@@ -240,7 +264,14 @@ end
     cyclic_lift_solver(P::PolynomialCover{T}, y::Number; s::Real=3, tol::Real=1e-9, kwargs...) where {T<:Real}
 
 Compute the cyclically ordered fiber of the polynomial `P` over a target `y` outside the critical value disk.
+The solver works in two stages:
 
+1. compute a base fiber at a safe basepoint,
+2. transport the fiber to the target value `y`.
+
+Because the sheets are transported continuously along a path,
+the resulting roots inherit a cyclic ordering corresponding
+to the monodromy of the cover.
 # Arguments
 - `P::PolynomialCover{T}`: the polynomial cover
 - `y::Number`: target value in ℂ
@@ -295,43 +326,6 @@ Use the general fiber solver instead.
     return F.xs
 end
 
-#=
-
-function cyclic_lift_solver(
-    P::PolynomialCover{T},
-    y::Number;
-    s::Real = 3,
-    tol::Real = 1e-9,
-    kwargs...
-) where {T<:Real}
-
-    # Ensure complex target value
-    yc = complex(y)
-
-    # Critical radii bounds
-    Rcrit= min_critical_radius(coefficients(P))
-    S = real(bound_values_radius_origin(P, Rcrit))
-    # Robust safety check
-    margin = 1 - 10eps(real(S))
-    #exprintln("Computed S = $S, |y| = $(abs(yc)), margin = $margin")
-    if abs(yc) <= 1.5*S * margin
-        error("""
-cyclic_lift_solver requires |y| > 3S/2.
-Computed S = $S
-|y| = $(abs(yc))
-
-Use the general fiber solver instead.
-""")
-    end
-
-    # Base fiber and lifting
-    F = fiber(P; s=s, tol=tol)
-    transport_to!(F, yc; kwargs...)
-
-    return F.xs   # raíces en orden cíclico
-end
-
-=#
 
 const PLOT_DIR = joinpath(@__DIR__, "MyPlots", "PlotExamples")
 

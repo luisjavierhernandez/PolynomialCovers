@@ -19,6 +19,7 @@ makedocs(
         "Geometry" => "geometry.md",
         "Polynomial Covers" => "polynomialUtils.md",
         "Critical Disks" => "polynomialCriticalDisks.md",
+        "Basepoint and Loops" => "basepoint_and_loops.md",
         "API" => "api.md",
     ],
 )
