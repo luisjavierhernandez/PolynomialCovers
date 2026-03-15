@@ -327,5 +327,5 @@ Use the general fiber solver instead.
 end
 
 
-const PLOT_DIR = joinpath(@__DIR__, "MyPlots", "PlotExamples")
+#const PLOT_DIR = joinpath(@__DIR__, "MyPlots", "PlotExamples")
 

@@ -16,8 +16,50 @@ mutable struct PointState{T<:Real}
     w::Complex{T}
 end
 
-#include("PolynomialCriticalDisks.jl")
-#include("ApproximateLiftPath.jl")
+### PathState
+
+"""
+    PathState{T}
+
+State of a lifted path used for visualization and tracing.
+
+This structure stores the current point of the lifting process
+together with the trajectory followed during path lifting.
+
+The invariant relation
+
+    w = P(x)
+
+holds at every accepted step of the algorithm.
+
+Fields
+-------
+- `x` : current point in the domain
+- `w` : current image in the codomain
+- `pathx` : recorded trajectory in the domain
+- `pathy` : recorded trajectory in the codomain
+
+Notes
+-----
+This structure is mainly intended for **didactic and visualization
+purposes**, since it stores the full lifting trajectory.
+For high-performance lifting without recording intermediate
+points see the `PointState` based routines.
+"""
+mutable struct PathState{T<:Real}
+    x::Complex{T}
+    w::Complex{T}
+    pathx::Vector{Complex{T}}
+    pathy::Vector{Complex{T}}
+end
+
+function PathState(x::Complex{T1}, w::Complex{T2}) where {T1<:Real,T2<:Real}
+    T = promote_type(T1,T2)
+    PathState{T}(Complex{T}(x), Complex{T}(w), [Complex{T}(x)], [Complex{T}(w)])
+end
+
+PathState(x::Complex{T}, w::Complex{T}) where T =
+    PathState{T}(x, w, [x], [w])
 
 
 # -------------------pr-----------------------------------------

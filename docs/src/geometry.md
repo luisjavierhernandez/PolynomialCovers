@@ -18,7 +18,7 @@ value regions when performing numerical path lifting.
 
 ---
 
-# Disks
+## Disks
 
 A `Disk` represents a closed disk in the complex plane.
 

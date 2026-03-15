@@ -58,3 +58,50 @@ function plot_path(
 end
 
 const PLOT_DIR = joinpath(@__DIR__, "MyPlots", "PlotExamples")
+
+#####
+
+#Basic plot for debugging and visualization of paths, fibers, etc.
+
+
+####
+#P(x) = x^2
+
+function plot_example_basic_lift()
+
+    P = PolynomialCover([1,0,0])  # x^2
+
+    x0 = 2 + 0im
+    w0 = value(P, x0)
+
+    state = PathState(x0, w0)
+
+    ypath = Path([
+        Vertex(w0),
+        Vertex(w0 + 1),
+        Vertex(w0 + 2)
+    ])
+
+    lift_path_trace!(P, state, ypath; S=0.5)
+
+    px = real.(state.pathx)
+    py = imag.(state.pathx)
+
+    qx = real.(state.pathy)
+    qy = imag.(state.pathy)
+
+    p1 = plot(qx, qy,
+        marker=:circle,
+        label="path in codomain",
+        aspect_ratio=:equal)
+
+    p2 = plot(px, py,
+        marker=:circle,
+        label="lifted path",
+        aspect_ratio=:equal)
+
+    fig = plot(p1, p2, layout=(1,2))
+
+    savefig(fig, joinpath(PLOT_DIR,"basic_lift.png"))
+
+end

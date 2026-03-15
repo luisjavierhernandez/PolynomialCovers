@@ -75,8 +75,8 @@ P(x) = y
 can be computed by lifting paths in the complex plane through the
 polynomial map
 
-```\math
-P : \mathbb{C} \to \mathbb{C}.
+```math
+P \colon \mathbb{C} \to \mathbb{C}.
 ```
 
 In particular, the package implements numerical algorithms inspired by

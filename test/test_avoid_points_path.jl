@@ -92,8 +92,8 @@ z0 = Vertex(0.0,0.0)
 
     p = avoid_points_path(z0,zf,S)
 
-    @test startpoint(p) == z0.z
-    @test endpoint(p)   == zf.z
+    @test PolynomialCovers.startpoint(p) == z0.z
+    @test PolynomialCovers.endpoint(p)   == zf.z
     @test length(p) > 2
 end
 
@@ -142,8 +142,8 @@ end
 
 @testset "final allowed collision" begin
 
-    z0 = Vertex(0,0)
-    zf = Vertex(3,0)
+    z0 = Vertex(0.0,0.0)
+    zf = Vertex(3.0,0.0)
 
     S = [zf]
 
@@ -170,7 +170,7 @@ for k in 1:20
 
     p = avoid_points_path(z0,zf,S)
 
-    @test endpoint(p) == zf.z
+    @test PolynomialCovers.endpoint(p) == zf.z
 end
 
 end

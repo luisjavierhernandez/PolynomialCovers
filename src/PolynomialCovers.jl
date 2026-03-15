@@ -49,6 +49,7 @@ export PolynomialCover,
        critical_values_disk_origin,
        fiber,
        PointState,
+       PathState,
 
        basepoint,
        basepoint_initial_loop,
