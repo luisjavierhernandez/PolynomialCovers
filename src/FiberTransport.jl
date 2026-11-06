@@ -192,7 +192,6 @@ transport!(F, γ)
 println("Fiber after transport: ", F)
 
 """
-
 function transport!(F::Fiber, path::Path; parallel=true, kwargs...)
     if parallel && Threads.nthreads() > 1
         transport_threads!(F, path; kwargs...)
@@ -244,17 +243,18 @@ transport_to!(F, y_target)
 
 println("Fiber at y = ", y_target, ": ", F)
 """
-
 function transport_to!(F::Fiber, y::Number; kwargs...)
 
-    if abs(y) ≤ F.S*(3/2)
+    yc = complex(y)   # ensure Complex type for safe_path_arc
+
+    if abs(yc) ≤ F.S*(3/2)
         throw(ArgumentError(
             "Target y too close to the critical value disk. " *
             "Require |y| > 3S/2 for safe transport."
         ))
     end
 
-    path = safe_path_arc(F.w, y, F.S)
+    path = safe_path_arc(F.w, yc, F.S)
     return transport!(F, path; kwargs...)
 end
 
@@ -286,7 +286,6 @@ to the monodromy of the cover.
 - Requires `|y| > 3/2 * S`, where `S` is the radius of the critical value disk (possibly inflated by `s`).
 - If `y` is too close to the critical values, an error is raised.
 """
-
 function cyclic_lift_solver(
     P::PolynomialCover{T},
     y::Number;

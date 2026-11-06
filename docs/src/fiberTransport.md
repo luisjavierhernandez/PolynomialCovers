@@ -2,14 +2,14 @@
 
 Polynomial non constant maps 
 ```math
-P\colon \mathbb{C}\to mathbb{C}
+P\colon \mathbb{C}\to\mathbb{C}
 ```
 define branched coverings of the complex plane.  
 For a value `w ∈ ℂ` that is not a critical value of `P`, the fiber
 ```math
 P⁻¹(w) = \{ x ∈ ℂ : P(x) = w \}
 ```
-onsists of exactly `deg(P)` points counted without multiplicity.
+consists of exactly `deg(P)` points counted without multiplicity.
 
 The goal of this section is to describe how `PolynomialCovers.jl`
 computes such fibers and how they can be transported along paths
@@ -47,10 +47,10 @@ covering maps.
 A fiber is represented by the structure `Fiber`.
 
 A Fiber object contains:
-	•	the polynomial cover P,
-	•	the list of preimages xs,
-	•	the base value w,
-	•	a radius bound S enclosing all critical values.
+- the polynomial cover P,
+- the list of preimages xs,
+- the base value w,
+- a radius bound S enclosing all critical values.
 
 The structure is mutable because the fiber points are updated
 when transported along paths.
@@ -128,7 +128,7 @@ A direct application of fiber transport is solving equations of the form
 ```math
 P(x)=y
 ```
-he solver proceeds in two stages:
+The solver proceeds in two stages:
 	1.	compute a base fiber at a safe basepoint,
 	2.	transport the fiber to the target value y.
 
@@ -197,7 +197,7 @@ defines a permutation
 ```math
 σ_γ : P⁻¹(w₀) \to P⁻¹(w₀).
 ```
-he collection of all such permutations forms the **monodromy group**
+The collection of all such permutations forms the **monodromy group**
 of the polynomial cover.
 
 ---

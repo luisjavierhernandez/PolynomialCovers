@@ -1,10 +1,9 @@
 using Test
 using LinearAlgebra
 using Plots
-using DelimitedFiles
 using PolynomialCovers
 
-include("../src/MyPlots/MyPlot.jl")
+include(joinpath(@__DIR__, "..", "src", "MyPlots", "MyPlot.jl"))
 
 @testset "visual debug" begin
     z0 = Vertex(0.0,0.0)

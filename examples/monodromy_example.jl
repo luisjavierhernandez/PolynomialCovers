@@ -1,7 +1,7 @@
 using PolynomialCovers
 
 # Polynomial P(z) = z^2 - 1
-P = PolynomialCover([1,0,-1])
+P = PolynomialCover([1.0,0.0,-1.0])
 
 # Basepoint in the codomain
 b = basepoint(P)

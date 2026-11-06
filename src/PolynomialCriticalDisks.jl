@@ -174,7 +174,6 @@ end
 Return a radius of a disk centered at the origin that
 contains all critical values of `P`.
 """
-
 function critical_values_radius_origin(P::PolynomialCover)
     R = critical_points_radius_origin(P)
     bound_values_radius_origin(P, R)
@@ -186,7 +185,6 @@ end
 Return a disk centered at the origin containing all
 critical values of the polynomial cover.
 """
-
 function critical_values_disk_origin(P::PolynomialCover)
     r = critical_values_radius_origin(P)
     Disk(0.0+0.0im, r)

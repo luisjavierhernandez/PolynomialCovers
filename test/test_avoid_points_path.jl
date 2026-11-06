@@ -69,17 +69,6 @@ end
 # TEST SETS
 ############################################################
 
-z0 = Vertex(0.0,0.0)
-    zf = Vertex(5.0,0.0)
-
-    S = [
-        Vertex(2.5,0.5),
-        Vertex(2.5,-0.5)
-    ]
-
-    p = avoid_points_path(z0,zf,S)
-
-
 @testset "avoid_points_path basic" begin
 
     z0 = Vertex(0.0,0.0)

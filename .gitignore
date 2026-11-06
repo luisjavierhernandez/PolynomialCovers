@@ -6,3 +6,15 @@ docs/build/
 
 # Julia precompile cache
 *.ji
+
+# Julia Manifest (librería, no aplicación)
+Manifest.toml
+docs/Manifest.toml
+
+# Carpetas de trabajo internas
+Benchmark/
+PolynomialCovers_tmp/
+PrivateScripts/
+documentos/
+ruta/
+build/

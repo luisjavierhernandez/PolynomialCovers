@@ -24,11 +24,10 @@ Polynomial covers can be evaluated at complex points.
 
 ```@docs
 value
-derivative
 ```
 Example:
 ```julia
-P = PolynomialCover(1,0,-1)   # z² - 1
+P = PolynomialCover([1, 0, -1])   # z² - 1
 value(P,2)
 ```
 

@@ -23,6 +23,7 @@ Clone the repository and add the package to your Julia environment:
 ```julia
 using Pkg
 Pkg.add(path="path/to/PolynomialCovers")
+```
 
 ## Quick Start
 
@@ -32,7 +33,7 @@ a polynomial covering map.
 using PolynomialCovers
 
 # Define a polynomial cover
-P = PolynomialCover(1, 0, -1)     # P(z) = z^2 - 1
+P = PolynomialCover([1, 0, -1])     # P(z) = z^2 - 1
 
 # Compute a safe basepoint in the codomain
 b = basepoint(P)
@@ -67,7 +68,7 @@ around a critical value permutes the points of the fiber.
 using PolynomialCovers
 
 # Polynomial P(z) = z^2 - 1
-P = PolynomialCover(1, 0, -1)
+P = PolynomialCover([1, 0, -1])
 
 # Basepoint
 b = basepoint(P)
@@ -111,7 +112,7 @@ particularly effective when
 
 using PolynomialCovers
 
-P = PolynomialCover(1, 0, -1)
+P = PolynomialCover([1, 0, -1])
 
 # Radius containing the critical values
 S = critical_values_radius(P)
@@ -160,6 +161,27 @@ Planned features include
 	•	additional numerical solvers for fibers
 
 ⸻
+
+## Citation
+
+If you use this package in your research, please cite the accompanying article:
+
+```bibtex
+@article{AlvarezAparicio2026polynomial,
+  author    = {Álvarez-Aparicio, V. and Hernández-Paricio, L. J. and Rivas-Rodríguez, M. T.},
+  title     = {On a polynomial root-finding algorithm based on the monodromy
+               at infinity for equations with large independent term},
+  journal   = {Journal of Computational Algebra},
+  year      = {2026},
+}
+```
+
+The article introduces the geometric algorithm implemented in
+`cyclic_lift_solver` and provides pseudocode, theoretical analysis, and
+numerical experiments comparing the method with companion-matrix and
+homotopy-continuation approaches.
+
+---
 
 ## License
 

@@ -14,12 +14,12 @@ Several classical bounds are implemented to estimate the location of
 the roots of a polynomial and of its derivative.
 
 ```@docs
-cb
-cbprime
-fb
-fbprime
-bounds_radius
-min_critical_radius
+PolynomialCovers.cb
+PolynomialCovers.cbprime
+PolynomialCovers.fb
+PolynomialCovers.fbprime
+PolynomialCovers.bounds_radius
+PolynomialCovers.min_critical_radius
 ```
 ## Critical Point Bounds
 
@@ -27,8 +27,7 @@ The following functions estimate a disk centered at the origin
 containing all critical points of a polynomial cover.
 
 ```@docs
-critical_points_radius_origin
-critical_points_disk_origin
+PolynomialCovers.critical_points_radius_origin
 ```
 ## Critical Value Bounds
 
@@ -46,10 +45,7 @@ the region containing critical values.
 
 The following routines compute a radius guaranteeing this property.
 
-```@docs
-critical_values_exclusion_radius
-critical_values_exclusion_disk
-```
+
 # Mathematical background
 
 This section contains a description of the mathematical results used to construsct disks containing all the critical points and all the critical values.
@@ -196,9 +192,9 @@ safely without encountering singular fibers.
 
 These bounds serve several purposes in the algorithms implemented in
 PolynomialCovers:
-	•	providing a safe basepoint outside the critical value region,
-	•	constructing loops for monodromy computation, and
-	•	guaranteeing numerical stability of path lifting.
+- providing a safe basepoint outside the critical value region,
+- constructing loops for monodromy computation, and
+- guaranteeing numerical stability of path lifting.
 
 Although these bounds are not optimal, they are inexpensive to compute
 and sufficiently sharp for robust numerical algorithms.

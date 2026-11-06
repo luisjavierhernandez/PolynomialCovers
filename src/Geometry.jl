@@ -131,8 +131,6 @@ Vertex (point) in the complex plane.
 
 Vertices are used to build polygonal paths (`Path`).
 """
-
-
 struct Vertex{T<:Real}
     z::Complex{T}
 end
@@ -448,7 +446,6 @@ of forbidden vertices `S`.
 The algorithm uses a potential field method combining attraction
 towards the target and repulsion from forbidden points.
 """
-
 function avoid_points_path(
     z0::Vertex{T1},
     zf::Vertex{T2},

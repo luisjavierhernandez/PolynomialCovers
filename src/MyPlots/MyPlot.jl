@@ -67,41 +67,38 @@ const PLOT_DIR = joinpath(@__DIR__, "MyPlots", "PlotExamples")
 ####
 #P(x) = x^2
 
-function plot_example_basic_lift()
+using PolynomialCovers
+
+
+
+
+function example_predictor_newton()
 
     P = PolynomialCover([1,0,0])  # x^2
 
-    x0 = 2 + 0im
+    x0 = basepoint(P)
     w0 = value(P, x0)
 
     state = PathState(x0, w0)
 
     ypath = Path([
         Vertex(w0),
-        Vertex(w0 + 1),
-        Vertex(w0 + 2)
+        Vertex(w0 + 0.5 + 0.2im),
+        Vertex(w0 + 1.0 + 0.4im)
     ])
 
-    lift_path_trace!(P, state, ypath; S=0.5)
+    PolynomialCovers.lift_path_trace!(P, state, ypath; S=1.0)
 
-    px = real.(state.pathx)
-    py = imag.(state.pathx)
-
-    qx = real.(state.pathy)
-    qy = imag.(state.pathy)
-
-    p1 = plot(qx, qy,
+    fig = plot(
+        real.(state.pathx),
+        imag.(state.pathx),
         marker=:circle,
-        label="path in codomain",
-        aspect_ratio=:equal)
+        aspect_ratio=:equal,
+        label="domain trajectory"
+    )
 
-    p2 = plot(px, py,
-        marker=:circle,
-        label="lifted path",
-        aspect_ratio=:equal)
-
-    fig = plot(p1, p2, layout=(1,2))
-
-    savefig(fig, joinpath(PLOT_DIR,"basic_lift.png"))
+    savefig(fig, joinpath(PLOT_DIR,"predictor_newton.png"))
 
 end
+
+example_predictor_newton()

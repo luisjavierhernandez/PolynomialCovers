@@ -13,7 +13,7 @@ println("Fiber points:")
 println(F)
 
 # Construct a path avoiding critical values
-γ = safe_path_arc(b, -b)
+γ = safe_path_arc(b, -b,2.0)
 
 # Transport the fiber along the path
 transport!(F, γ)

@@ -20,6 +20,8 @@ makedocs(
         "Polynomial Covers" => "polynomialUtils.md",
         "Critical Disks" => "polynomialCriticalDisks.md",
         "Basepoint and Loops" => "basepoint_and_loops.md",
+        "Fibers and Transport" => "fiberTransport.md",
         "API" => "api.md",
+        "Roadmap" => "roadmap.md",
     ],
 )

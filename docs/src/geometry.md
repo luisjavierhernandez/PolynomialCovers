@@ -37,8 +37,7 @@ Disk
 
 ## Membership and boundary
 ```@docs
-in
-onboundary
+PolynomialCovers.onboundary
 ```
 ## Distance
 
@@ -48,8 +47,7 @@ distance
 ## Transformations
 
 ```@docs
-translate
-scale
+PolynomialCovers.translate
 ```
 ## Vertices
 
@@ -74,16 +72,10 @@ v₁ → v₂ → ... → vₙ
 ```@docs
 Path
 ```
-## Basic access
-
-```@docs
-startpoint
-endpoint
-```
 ## Concatenation
 
 ```@docs
-concatenate
+PolynomialCovers.concatenate
 ```
 ## Polygonal Loops
 
@@ -91,7 +83,7 @@ Regular polygonal loops centered at the origin are frequently used in
 monodromy computations.
 
 ```@docs
-polygonal_loop_origin
+PolynomialCovers.polygonal_loop_origin
 ```
 
 These loops approximate circular paths while remaining purely
@@ -108,10 +100,9 @@ The following utilities detect intersections between segments or paths
 and disks.
 
 ```@docs
-segment_intersects_disk
-path_intersects_disk
-path_avoids_disk
-avoids
+PolynomialCovers.segment_intersects_disk
+PolynomialCovers.path_intersects_disk
+PolynomialCovers.path_avoids_disk
 ```
 ## Safe Path Construction
 
@@ -122,7 +113,7 @@ These routines are crucial for robust numerical lifting.
 
 ```@docs
 safe_path_arc
-approach_path
+PolynomialCovers.approach_path
 avoid_points_path
 ```
 
@@ -139,15 +130,7 @@ points.
 
 ---
 
-## Utilities
-
-```@docs
-promote_vertices
-min_pairwise_distance
-```
-
-These helper functions support numerical robustness by ensuring
-consistent numeric types and providing geometric estimates.
+The geometric utilities (type promotion and pairwise distance estimation) are used internally to ensure numerical robustness.
 
 ---
 
